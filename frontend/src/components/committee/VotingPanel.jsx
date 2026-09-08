@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { committeeApi } from '../../services/api';
 import { useAuth } from '../../contexts/AuthContext';
 import { Vote, CheckCircle2, ShieldCheck, Scale, AlertOctagon, Clock, Check } from 'lucide-react';
-import { OutcomeBadge } from '../common/OutcomeBadge';
+import { OutcomeBadge } from '../common/RiskBadge';
 
 const COMMITTEE_MEMBERS = [
   { name: 'Sunita Rao', role: 'Chief Risk Officer (CRO)', division: 'Executive Risk', focusLens: 'Overall Institutional Risk Exposure & Capital Impact' },

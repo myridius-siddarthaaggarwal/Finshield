@@ -1,6 +1,6 @@
 # 🧪 FinShield Automated Verification & Test Report
 
-> **Generated At**: `2026-09-08T16:46:25.295337+00:00`  
+> **Generated At**: `2026-09-08T16:46:49.366444+00:00`  
 > **Overall Status**: **✅ ALL SYSTEMS OPERATIONAL**  
 
 ---
@@ -9,9 +9,9 @@
 
 | Test Suite | Status | Execution Time | Summary / Details |
 | :--- | :---: | :--- | :--- |
-| **Backend Pytest Suite** | ✅ PASS | 3.75s | ======================= 16 passed, 4 warnings in 0.59s ======================== |
-| **Governed Data Layer Audit** | ✅ PASS | 0.017s | 4 Reference tables verified (FATF, Regs, Controls, Taxonomies) |
-| **Prompt Versioning Audit** | ✅ PASS | 0.0s | Semantic prompt schemas valid |
+| **Backend Pytest Suite** | ✅ PASS | 3.53s | ======================= 16 passed, 4 warnings in 0.52s ======================== |
+| **Governed Data Layer Audit** | ✅ PASS | 0.009s | 4 Reference tables verified (FATF, Regs, Controls, Taxonomies) |
+| **Prompt Versioning Audit** | ✅ PASS | 0.007s | Semantic prompt schemas valid |
 | **Frontend Build Integrity** | ✅ PASS | 0.0s | Production bundle ready in `frontend/dist/` |
 
 ---
@@ -27,6 +27,6 @@ lient.py:41
     warnings.warn(message, DeprecationWarning)
 
 -- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
-======================= 16 passed, 4 warnings in 0.59s ========================
+======================= 16 passed, 4 warnings in 0.52s ========================
 
 ```

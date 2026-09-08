@@ -1,0 +1,29 @@
+{
+  "name": "finshield-test-agent",
+  "version": "1.0.0",
+  "description": "FinShield Automated Quality Assurance & Test Diagnostics MCP Server",
+  "command": "python",
+  "args": ["agents/test_agent/test_agent.py", "--mcp"],
+  "tools": [
+    {
+      "name": "run_all_tests",
+      "description": "Run full test suite: backend pytest, governed data layer audit, prompt validation, and frontend build check.",
+      "inputSchema": { "type": "object", "properties": {} }
+    },
+    {
+      "name": "run_backend_tests",
+      "description": "Run Python FastAPI unit and integration tests with pytest.",
+      "inputSchema": { "type": "object", "properties": {} }
+    },
+    {
+      "name": "audit_governed_data_layer",
+      "description": "Audit JSON validity and completeness of the Governed Data Layer (FATF tables, regulatory frameworks, controls).",
+      "inputSchema": { "type": "object", "properties": {} }
+    },
+    {
+      "name": "audit_frontend_build",
+      "description": "Check if frontend production assets are built and ready for deployment.",
+      "inputSchema": { "type": "object", "properties": {} }
+    }
+  ]
+}

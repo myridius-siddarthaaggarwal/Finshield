@@ -1,13 +1,45 @@
 {
   "name": "finshield-git-agent",
-  "version": "1.0.0",
-  "description": "FinShield Git Automation MCP Server for automated branching, committing, pushing, and repository synchronization.",
+  "version": "2.2.0",
+  "description": "FinShield Git Automation MCP Server for automated test verification, merge conflict simulation, committing, pushing, and repository synchronization.",
   "command": "python",
-  "args": ["agents/git_agent/git_agent.py"],
+  "args": ["agents/git_agent/git_agent.py", "--mcp"],
   "tools": [
     {
+      "name": "git_auto_push",
+      "description": "Autonomous full-pipeline push: runs test suite verification, checks for merge conflicts, auto-generates conventional commit message if needed, stages, pulls cleanly, and pushes to GitHub.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string", "description": "Optional custom commit message" },
+          "remote": { "type": "string", "default": "origin", "description": "Remote name" },
+          "branch": { "type": "string", "description": "Branch name" },
+          "verify": { "type": "boolean", "default": true, "description": "Run automated test suite verification before pushing" }
+        }
+      }
+    },
+    {
+      "name": "git_check_conflicts",
+      "description": "Deep merge conflict inspection. Simulates remote merge in-memory, detects conflict markers, and verifies clean pushability without modifying workspace.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "remote": { "type": "string", "default": "origin", "description": "Remote name" },
+          "branch": { "type": "string", "description": "Branch name" }
+        }
+      }
+    },
+    {
       "name": "git_status",
-      "description": "Get current git branch, staged files, unstaged changes, untracked files, and remote status in structured JSON.",
+      "description": "Get current git branch, staged files, unstaged changes, untracked files, conflicted files, and remote status in structured JSON.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "git_stage_all",
+      "description": "Stage all modified, deleted, and untracked files in the repository.",
       "inputSchema": {
         "type": "object",
         "properties": {}
@@ -22,8 +54,7 @@
           "message": { "type": "string", "description": "Commit message" },
           "scope": { "type": "string", "description": "Scope e.g. backend, frontend, docs" },
           "type": { "type": "string", "description": "Type e.g. feat, fix, chore, docs", "default": "feat" }
-        },
-        "required": ["message"]
+        }
       }
     },
     {
@@ -35,30 +66,6 @@
           "name": { "type": "string", "description": "Branch name to create or switch to" }
         },
         "required": ["name"]
-      }
-    },
-    {
-      "name": "git_sync",
-      "description": "Stage, commit, pull latest changes and push upstream to remote in one operation.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "message": { "type": "string", "description": "Commit message" },
-          "remote": { "type": "string", "description": "Remote name", "default": "origin" }
-        },
-        "required": ["message"]
-      }
-    },
-    {
-      "name": "git_set_remote",
-      "description": "Set or update GitHub remote origin URL.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "url": { "type": "string", "description": "GitHub repository URL (HTTPS or SSH)" },
-          "name": { "type": "string", "description": "Remote name", "default": "origin" }
-        },
-        "required": ["url"]
       }
     },
     {
@@ -80,6 +87,16 @@
         "properties": {
           "remote": { "type": "string", "default": "origin" },
           "branch": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "git_log",
+      "description": "Get recent commit history.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": { "type": "number", "default": 5 }
         }
       }
     }

@@ -1,0 +1,39 @@
+{
+  "version": "2026.1",
+  "dimensions": [
+    {
+      "key": "money_laundering",
+      "name": "Money Laundering Risk",
+      "default_weight": 0.35,
+      "description": "Exposure to placement, layering, or integration of illicit capital through products, channels, or velocity.",
+      "primary_framework": "FATF Recommendations 10, 13, 15, 16"
+    },
+    {
+      "key": "terrorist_financing",
+      "name": "Terrorist Financing Risk",
+      "default_weight": 0.20,
+      "description": "Potential for accounts or payment networks to be leveraged for funding sanctioned or terrorist groups.",
+      "primary_framework": "FATF Recommendations 6, 12"
+    },
+    {
+      "key": "fraud",
+      "name": "Fraud & Consumer Harm Risk",
+      "default_weight": 0.25,
+      "description": "Vulnerability to Authorised Push Payment (APP) fraud, synthetic identity exploitation, or unauthorized account takeover.",
+      "primary_framework": "FCA Consumer Duty, PSR APP Fraud 2024, NACHA 2026"
+    },
+    {
+      "key": "compliance",
+      "name": "Regulatory & Legal Compliance Risk",
+      "default_weight": 0.20,
+      "description": "Risk of statutory breach, lack of mandatory regulatory licenses (e.g. CASP/MiCA), or model governance deficiency.",
+      "primary_framework": "OCC TPRM, FCA Model Risk 2026, FinCEN AI Guidance"
+    }
+  ],
+  "threshold_bands": [
+    { "min": 0.0, "max": 3.0, "tier": "LOW", "badge_color": "emerald", "action": "Fast-Track Eligible / Standard Monitoring" },
+    { "min": 3.1, "max": 6.0, "tier": "MEDIUM", "badge_color": "amber", "action": "Standard Committee Review & Targeted Conditions" },
+    { "min": 6.1, "max": 8.0, "tier": "HIGH", "badge_color": "orange", "action": "Enhanced Scrutiny, Mandatory EDD or Conditional Approval" },
+    { "min": 8.1, "max": 10.0, "tier": "CRITICAL", "badge_color": "rose", "action": "High Escalation, Strict Conditions or Rejection" }
+  ]
+}

@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: finshield-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - PROJECT_NAME=FinShield
+      - DATABASE_URL=sqlite:///./finshield.db
+      - SECRET_KEY=finshield-secret-key-super-secure-change-in-production-2026
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - CORS_ORIGINS=http://localhost:5173,http://localhost:3000,http://localhost:80
+    volumes:
+      - ./backend/finshield.db:/app/backend/finshield.db
+      - ./governed_data_layer:/app/governed_data_layer
+      - ./prompts:/app/prompts
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: finshield-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: unless-stopped

@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "name": "FinShield Assessment Draft & Committee Memo Generator",
+  "updated_at": "2026-09-01",
+  "change_log": "Generates formal FCRM Risk Committee assessment memoranda with precedents, control gaps, and recommendation options.",
+  "system_prompt": "You are a Chief Compliance Officer Executive Assistant.\nGiven the case details, dimension scores, control library findings, and regulatory citations, generate a structured FCRM Risk Committee Memorandum.\n\nStructure:\n1. Executive Summary\n2. Real-World Precedents & Regulatory Exposure\n3. Key Risk Dimension Breakdown\n4. Existing vs Recommended Control Gaps\n5. Proposed Conditions / Mitigation Plan\n6. Recommendation for Committee (Approve / Approve with Conditions / Defer / Reject)\n\nReturn strict valid JSON with formatted markdown sections.",
+  "output_schema": {
+    "memo_title": "string",
+    "executive_summary": "string",
+    "precedent_analysis": "string",
+    "controls_gap_analysis": "string",
+    "suggested_conditions": ["string"],
+    "recommendation": "string"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "version": "2026.1",
+  "source": "FATF High-Risk Jurisdictions & Basel AML Index 2026",
+  "last_updated": "2026-03-01",
+  "jurisdictions": [
+    {
+      "country_code": "GB",
+      "country_name": "United Kingdom",
+      "risk_tier": "LOW",
+      "risk_multiplier": 1.0,
+      "fatf_status": "Compliant",
+      "notes": "Domestic market with strong supervisory oversight under FCA and MLR 2017."
+    },
+    {
+      "country_code": "EU",
+      "country_name": "European Union (SEPA Zone)",
+      "risk_tier": "LOW-MEDIUM",
+      "risk_multiplier": 1.2,
+      "fatf_status": "Compliant",
+      "notes": "Standard AMLD6 and MiCA regulatory framework applicable."
+    },
+    {
+      "country_code": "SG",
+      "country_name": "Singapore",
+      "risk_tier": "LOW-MEDIUM",
+      "risk_multiplier": 1.2,
+      "fatf_status": "Monitored",
+      "notes": "MAS regulated financial center; post-2024 S$3B money laundering review heightened vigilance."
+    },
+    {
+      "country_code": "US",
+      "country_name": "United States",
+      "risk_tier": "MEDIUM",
+      "risk_multiplier": 1.4,
+      "fatf_status": "Compliant",
+      "notes": "FinCEN BSA/AML regime, GENIUS Act 2025 compliance for digital assets."
+    },
+    {
+      "country_code": "JE",
+      "country_name": "Jersey (Channel Islands)",
+      "risk_tier": "MEDIUM",
+      "risk_multiplier": 1.4,
+      "fatf_status": "Monitored",
+      "notes": "Offshore private banking jurisdiction; OECD CRS and tax reporting agreements active."
+    },
+    {
+      "country_code": "KY",
+      "country_name": "Cayman Islands",
+      "risk_tier": "MEDIUM-HIGH",
+      "risk_multiplier": 1.5,
+      "fatf_status": "Monitored",
+      "notes": "Offshore secrecy jurisdiction requiring enhanced beneficial ownership scrutiny."
+    },
+    {
+      "country_code": "SEA",
+      "country_name": "Southeast Asia Regional Corridor",
+      "risk_tier": "HIGH",
+      "risk_multiplier": 1.7,
+      "fatf_status": "Enhanced Scrutiny",
+      "notes": "Active transit corridor for cross-border financial syndicates and pig butchering typologies."
+    },
+    {
+      "country_code": "AE",
+      "country_name": "United Arab Emirates",
+      "risk_tier": "HIGH",
+      "risk_multiplier": 1.8,
+      "fatf_status": "Increased Monitoring",
+      "notes": "High volume hub; subject to 2026 $54.5M exchange house fine precedent and strict EDD mandates."
+    },
+    {
+      "country_code": "NG",
+      "country_name": "Nigeria",
+      "risk_tier": "HIGH",
+      "risk_multiplier": 1.9,
+      "fatf_status": "FATF Grey List",
+      "notes": "High TBML and correspondent banking exposure requiring CBN license verification & EDD."
+    },
+    {
+      "country_code": "IR",
+      "country_name": "Iran",
+      "risk_tier": "CRITICAL_SANCTIONED",
+      "risk_multiplier": 3.0,
+      "fatf_status": "FATF Black List / OFAC Comprehensive Sanctions",
+      "notes": "Strict prohibition. Automatic rejection on sanctions screening."
+    },
+    {
+      "country_code": "KP",
+      "country_name": "Democratic People's Republic of Korea",
+      "risk_tier": "CRITICAL_SANCTIONED",
+      "risk_multiplier": 3.0,
+      "fatf_status": "FATF Black List / OFAC Comprehensive Sanctions",
+      "notes": "Strict prohibition. Automatic rejection on sanctions screening."
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "version": "2026.1",
+  "frameworks": [
+    {
+      "id": "FATF-R1",
+      "authority": "FATF",
+      "code": "Recommendation 1",
+      "title": "Assessing Risks & Applying a Risk-Based Approach",
+      "summary": "Measures to prevent or mitigate ML/TF must be commensurate with the risks identified.",
+      "applicable_cases": [6]
+    },
+    {
+      "id": "FATF-R3",
+      "authority": "FATF",
+      "code": "Recommendation 3",
+      "title": "Money Laundering Offence & Detection Obligations",
+      "summary": "Financial institutions must maintain systems capable of detecting, investigating, and reporting suspicious activity.",
+      "applicable_cases": [7]
+    },
+    {
+      "id": "FATF-R6",
+      "authority": "FATF",
+      "code": "Recommendation 6",
+      "title": "Targeted Financial Sanctions Related to Terrorism",
+      "summary": "Immediate asset freezing and prevention of funds/assets directly or indirectly available to sanctioned persons.",
+      "applicable_cases": [1, 2, 3]
+    },
+    {
+      "id": "FATF-R10",
+      "authority": "FATF",
+      "code": "Recommendation 10",
+      "title": "Customer Due Diligence (CDD)",
+      "summary": "Mandates verifying customer identity, beneficial owners, and intended nature of business relationship.",
+      "applicable_cases": [1]
+    },
+    {
+      "id": "FATF-R12",
+      "authority": "FATF",
+      "code": "Recommendation 12",
+      "title": "Politically Exposed Persons (PEPs)",
+      "summary": "Requires enhanced due diligence, senior management approval, and reasonable measures to establish source of wealth.",
+      "applicable_cases": [4, 5]
+    },
+    {
+      "id": "FATF-R13",
+      "authority": "FATF",
+      "code": "Recommendation 13",
+      "title": "Correspondent Banking & Third-Party Intermediaries",
+      "summary": "Gather sufficient information about respondent institutions and assess their AML/CFT controls.",
+      "applicable_cases": [4]
+    },
+    {
+      "id": "FATF-R15",
+      "authority": "FATF",
+      "code": "Recommendation 15",
+      "title": "New Technologies & Virtual Asset Service Providers (VASPs)",
+      "summary": "VASPs must be licensed/registered and subject to effective AML/CFT systems including Travel Rule compliance.",
+      "applicable_cases": [3]
+    },
+    {
+      "id": "FATF-R16",
+      "authority": "FATF",
+      "code": "Recommendation 16",
+      "title": "Wire Transfers (Travel Rule)",
+      "summary": "Requires originator and beneficiary information to accompany wire transfers throughout payment chain.",
+      "applicable_cases": [2, 3]
+    },
+    {
+      "id": "FATF-R22",
+      "authority": "FATF",
+      "code": "Recommendation 22",
+      "title": "Designated Non-Financial Businesses & Wealth Managers",
+      "summary": "CDD requirements apply when engaging in transactions for clients involving offshore holding entities.",
+      "applicable_cases": [5]
+    },
+    {
+      "id": "FCA-CD2023",
+      "authority": "FCA (UK)",
+      "code": "Consumer Duty 2023 / 2026",
+      "title": "FCA Consumer Duty & Supervisory Expectations",
+      "summary": "Sets high standard of consumer protection, requiring firms to avoid causing foreseeable harm and prevent exploitation.",
+      "applicable_cases": [1, 2]
+    },
+    {
+      "id": "FCA-MRM2026",
+      "authority": "FCA (UK)",
+      "code": "Model Risk Management 2026",
+      "title": "Supervisory Framework for AI in Compliance Operations",
+      "summary": "Requires independent model validation, explainability, mandatory human sampling, and rollback plans for AI alert triage.",
+      "applicable_cases": [7]
+    },
+    {
+      "id": "PSR-APP2024",
+      "authority": "Payment Systems Regulator",
+      "code": "PSR APP Fraud Reimbursement 2024",
+      "title": "Authorised Push Payment Fraud Mandatory Protections",
+      "summary": "Mandates 50:50 reimbursement liability between sending and receiving firms for APP fraud victims, driving strict real-time fraud scoring.",
+      "applicable_cases": [2]
+    },
+    {
+      "id": "NACHA-2026",
+      "authority": "NACHA",
+      "code": "NACHA 2026 Fraud Rules",
+      "title": "Faster Payments Fraud Monitoring Standard",
+      "summary": "Mandates participating institutions to implement real-time scoring and delay protocols for suspect instant transfers.",
+      "applicable_cases": [2]
+    },
+    {
+      "id": "MICA-2025",
+      "authority": "European Union",
+      "code": "MiCA Regulation 2024/2025",
+      "title": "Markets in Crypto-Assets (CASP Authorisation)",
+      "summary": "Crypto-asset service providers must hold valid CASP authorization to operate or offer crypto wallets in the EU.",
+      "applicable_cases": [3]
+    },
+    {
+      "id": "FINCEN-IA2026",
+      "authority": "FinCEN (US)",
+      "code": "Investment Adviser Rule 2026",
+      "title": "AML/CFT Requirements for Registered Investment Advisers",
+      "summary": "Requires investment advisers to establish formal AML programs and report suspicious transactions under BSA.",
+      "applicable_cases": [5]
+    },
+    {
+      "id": "OCC-TPRM2023",
+      "authority": "OCC / Fed / FDIC",
+      "code": "Interagency Guidance on Third-Party Risk 2023",
+      "title": "Third-Party Relationships: Risk Management",
+      "summary": "Comprehensive due diligence and continuous monitoring required for third-party payment processors and cross-border vendors.",
+      "applicable_cases": [4]
+    }
+  ]
+}

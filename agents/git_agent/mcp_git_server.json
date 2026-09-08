@@ -1,0 +1,87 @@
+{
+  "name": "finshield-git-agent",
+  "version": "1.0.0",
+  "description": "FinShield Git Automation MCP Server for automated branching, committing, pushing, and repository synchronization.",
+  "command": "python",
+  "args": ["agents/git_agent/git_agent.py"],
+  "tools": [
+    {
+      "name": "git_status",
+      "description": "Get current git branch, staged files, unstaged changes, untracked files, and remote status in structured JSON.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {}
+      }
+    },
+    {
+      "name": "git_commit",
+      "description": "Stage all changes and create a conventional formatted commit.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string", "description": "Commit message" },
+          "scope": { "type": "string", "description": "Scope e.g. backend, frontend, docs" },
+          "type": { "type": "string", "description": "Type e.g. feat, fix, chore, docs", "default": "feat" }
+        },
+        "required": ["message"]
+      }
+    },
+    {
+      "name": "git_branch",
+      "description": "Create and checkout a new branch for feature isolation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string", "description": "Branch name to create or switch to" }
+        },
+        "required": ["name"]
+      }
+    },
+    {
+      "name": "git_sync",
+      "description": "Stage, commit, pull latest changes and push upstream to remote in one operation.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string", "description": "Commit message" },
+          "remote": { "type": "string", "description": "Remote name", "default": "origin" }
+        },
+        "required": ["message"]
+      }
+    },
+    {
+      "name": "git_set_remote",
+      "description": "Set or update GitHub remote origin URL.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "url": { "type": "string", "description": "GitHub repository URL (HTTPS or SSH)" },
+          "name": { "type": "string", "description": "Remote name", "default": "origin" }
+        },
+        "required": ["url"]
+      }
+    },
+    {
+      "name": "git_push",
+      "description": "Push branch to remote repository.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "remote": { "type": "string", "default": "origin" },
+          "branch": { "type": "string" }
+        }
+      }
+    },
+    {
+      "name": "git_pull",
+      "description": "Pull latest changes from remote repository.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "remote": { "type": "string", "default": "origin" },
+          "branch": { "type": "string" }
+        }
+      }
+    }
+  ]
+}

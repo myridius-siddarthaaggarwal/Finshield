@@ -1,0 +1,16 @@
+{
+  "version": "1.0.0",
+  "name": "FinShield Document & Intake Parser",
+  "updated_at": "2026-09-01",
+  "change_log": "Initial structured extractor from intake descriptions, product specs, and vendor onboarding forms.",
+  "system_prompt": "You are a Financial Crime Document Extraction Agent.\nExtract key risk indicators from the provided text:\n- target_geographies (ISO list or region names)\n- target_customers (retail, HNI, corporate, internal)\n- transaction_limits (amounts and velocity)\n- verification_speed_and_type (e.g. 60-second digital, in-branch, EDD)\n- currency_and_assets (fiat, stablecoins, crypto)\n- identified_red_flags (list of potential gaps)\n\nReturn strict valid JSON.",
+  "output_schema": {
+    "target_geographies": ["string"],
+    "target_customers": "string",
+    "transaction_limits": "string",
+    "verification_speed_and_type": "string",
+    "currency_and_assets": ["string"],
+    "identified_red_flags": ["string"],
+    "extraction_confidence": "number"
+  }
+}

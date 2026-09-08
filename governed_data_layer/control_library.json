@@ -1,0 +1,89 @@
+{
+  "version": "2026.1",
+  "controls": [
+    {
+      "id": "CTRL-KYC-BASIC",
+      "name": "Basic Onboarding KYC",
+      "category": "Customer Due Diligence",
+      "effectiveness": 0.15,
+      "description": "Single-point identity verification at account creation without ongoing velocity checks."
+    },
+    {
+      "id": "CTRL-KYC-RISK",
+      "name": "Risk-Based Enhanced KYC",
+      "category": "Customer Due Diligence",
+      "effectiveness": 0.65,
+      "description": "Dynamic verification depth scaled according to geographic, transactional, or entity risk factors."
+    },
+    {
+      "id": "CTRL-TXN-LIMITS",
+      "name": "Velocity & Transaction Limits",
+      "category": "Preventative Controls",
+      "effectiveness": 0.55,
+      "description": "Daily/per-transaction limits restricting loss exposure during initial probationary window (e.g. £500/day for 90 days)."
+    },
+    {
+      "id": "CTRL-TXN-MONITORING",
+      "name": "Real-Time Transaction Monitoring",
+      "category": "Detective Controls",
+      "effectiveness": 0.60,
+      "description": "Automated rule-based & ML transaction surveillance screening against mule, smurfing, and anomaly typologies."
+    },
+    {
+      "id": "CTRL-DEV-FINGERPRINT",
+      "name": "Device & Network Fingerprinting",
+      "category": "Fraud Prevention",
+      "effectiveness": 0.50,
+      "description": "Hardware ID, proxy detection, and geolocation telemetry to prevent botnets and synthetic identity rings."
+    },
+    {
+      "id": "CTRL-COP",
+      "name": "Confirmation of Payee (CoP)",
+      "category": "Payments Fraud",
+      "effectiveness": 0.45,
+      "description": "Name-checking service matching destination account name before faster payment execution."
+    },
+    {
+      "id": "CTRL-PAYEE-DELAY",
+      "name": "New Payee Cooling-Off Delay",
+      "category": "Payments Fraud",
+      "effectiveness": 0.40,
+      "description": "Mandatory 10–30 second delay for first-time payees allowing out-of-band scam challenge."
+    },
+    {
+      "id": "CTRL-PEP-SCREENING",
+      "name": "Automated PEP & Sanctions Screening",
+      "category": "Regulatory Compliance",
+      "effectiveness": 0.70,
+      "description": "Daily batch and real-time screening against OpenSanctions, OFAC, and PEP database registers."
+    },
+    {
+      "id": "CTRL-SOW-VERIFICATION",
+      "name": "Source of Wealth & Funds Verification",
+      "category": "Enhanced Due Diligence",
+      "effectiveness": 0.65,
+      "description": "Audited proof of capital origin for private banking and high net worth investment products."
+    },
+    {
+      "id": "CTRL-VENDOR-EDD",
+      "name": "Comprehensive Vendor EDD & UBO Audit",
+      "category": "Third-Party Risk",
+      "effectiveness": 0.60,
+      "description": "25%+ Ultimate Beneficial Ownership verification, license validation with local regulator, and on-site inspection."
+    },
+    {
+      "id": "CTRL-AI-SAMPLING",
+      "name": "Human Quality Sampling & Review (10%)",
+      "category": "AI Model Governance",
+      "effectiveness": 0.70,
+      "description": "Monthly manual re-investigation of a random 10% slice of AI-closed alert triage decisions."
+    },
+    {
+      "id": "CTRL-AI-VALIDATION",
+      "name": "Independent Model Risk Validation",
+      "category": "AI Model Governance",
+      "effectiveness": 0.65,
+      "description": "Third-party audit of AI alert triage false-negative rates, calibration, and explainability records."
+    }
+  ]
+}

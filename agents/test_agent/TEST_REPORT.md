@@ -1,6 +1,6 @@
 # 🧪 FinShield Automated Verification & Test Report
 
-> **Generated At**: `2026-09-08T16:46:49.366444+00:00`  
+> **Generated At**: `2026-09-08T16:47:50.873821+00:00`  
 > **Overall Status**: **✅ ALL SYSTEMS OPERATIONAL**  
 
 ---
@@ -9,10 +9,10 @@
 
 | Test Suite | Status | Execution Time | Summary / Details |
 | :--- | :---: | :--- | :--- |
-| **Backend Pytest Suite** | ✅ PASS | 3.53s | ======================= 16 passed, 4 warnings in 0.52s ======================== |
-| **Governed Data Layer Audit** | ✅ PASS | 0.009s | 4 Reference tables verified (FATF, Regs, Controls, Taxonomies) |
-| **Prompt Versioning Audit** | ✅ PASS | 0.007s | Semantic prompt schemas valid |
-| **Frontend Build Integrity** | ✅ PASS | 0.0s | Production bundle ready in `frontend/dist/` |
+| **Backend Pytest Suite** | ✅ PASS | 3.58s | ======================= 16 passed, 4 warnings in 0.52s ======================== |
+| **Governed Data Layer Audit** | ✅ PASS | 0.006s | 4 Reference tables verified (FATF, Regs, Controls, Taxonomies) |
+| **Prompt Versioning Audit** | ✅ PASS | 0.006s | Semantic prompt schemas valid |
+| **Frontend Build Integrity** | ✅ PASS | 0.002s | Production bundle ready in `frontend/dist/` |
 
 ---
 

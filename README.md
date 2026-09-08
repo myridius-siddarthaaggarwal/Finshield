@@ -22,6 +22,17 @@
 
 ---
 
+## 📚 Team Documentation & Knowledge Index
+
+| Document | Description | Target Audience |
+| :--- | :--- | :--- |
+| 🏛️ **[System Architecture Guide](file:///docs/ARCHITECTURE.md)** | Full technical design, FSM transitions, math, and data flows | Engineers & Architects |
+| 📖 **[User Guide & Presentation Manual](file:///docs/USER_GUIDE.md)** | Step-by-step walkthrough for all personas & demo cases | Presenters & Judges |
+| 🛠️ **[Developer & Local Setup Guide](file:///docs/DEVELOPER_GUIDE.md)** | Local environment setup, test suite, and how to extend code | Teammates & Developers |
+| 🔑 **[API Keys & Configuration Reference](file:///docs/API_KEYS_AND_CONFIG.md)** | Claude API keys, environment variables & offline fallback | Developers & DevOps |
+
+---
+
 ## 🏗️ Architecture & Engineering Judgement
 
 FinShield is built on a deliberate **Hybrid Architecture** that strictly separates probabilistic AI reasoning from deterministic business rules:

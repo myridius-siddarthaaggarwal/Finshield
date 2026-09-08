@@ -2,7 +2,7 @@
 """
 FinShield Git Automation Agent & MCP Server
 Provides automated Git repository management, conventional commits, branching,
-remote synchronization, and a full Model Context Protocol (MCP) stdio server.
+automated pre-push quality checks (test suites & builds), and full MCP stdio protocol.
 """
 
 import argparse
@@ -10,10 +10,17 @@ import json
 import os
 import subprocess
 import sys
-import urllib.request
-import urllib.error
 from pathlib import Path
 from typing import Dict, Any, List, Optional
+
+
+# Ensure UTF-8 output on Windows
+if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    except Exception:
+        pass
 
 
 class GitAgent:
@@ -166,8 +173,44 @@ class GitAgent:
                     })
         return history
 
-    def sync(self, commit_message: str, remote: str = "origin") -> Dict[str, Any]:
-        """Perform full sync: stage all, commit, pull, and push."""
+    def verify_quality(self) -> Dict[str, Any]:
+        """Runs pre-push automated quality checks (pytest + data layer audit)."""
+        print("[GitAgent] Running pre-push verification tests...", file=sys.stderr)
+        try:
+            test_agent_path = self.repo_path / "agents" / "test_agent" / "test_agent.py"
+            venv_python = self.repo_path / ".venv" / "Scripts" / "python.exe"
+            py_exec = str(venv_python) if venv_python.exists() else "python"
+
+            res = subprocess.run(
+                [py_exec, str(test_agent_path), "run"],
+                cwd=str(self.repo_path),
+                capture_output=True,
+                text=True
+            )
+            passed = res.returncode == 0
+            return {
+                "verified": passed,
+                "output": res.stdout[-600:] if len(res.stdout) > 600 else res.stdout,
+                "error": res.stderr if not passed else None
+            }
+        except Exception as e:
+            return {
+                "verified": False,
+                "output": "",
+                "error": f"Verification error: {str(e)}"
+            }
+
+    def sync(self, commit_message: str, remote: str = "origin", verify: bool = True) -> Dict[str, Any]:
+        """Perform full sync with optional automated verification pre-flight check."""
+        if verify:
+            verify_res = self.verify_quality()
+            if not verify_res["verified"]:
+                return {
+                    "status": "aborted",
+                    "reason": "Pre-push verification failed. Fix test issues before syncing.",
+                    "verification": verify_res
+                }
+
         stage_msg = self.stage_all()
         commit_msg = self.commit(commit_message)
         curr_branch = self.status()["branch"]
@@ -176,6 +219,7 @@ class GitAgent:
 
         return {
             "status": "success",
+            "verified": verify,
             "branch": curr_branch,
             "commit": commit_msg,
             "pull": pull_msg,
@@ -207,6 +251,18 @@ MCP_TOOLS = [
                 "message": { "type": "string", "description": "Commit message" },
                 "scope": { "type": "string", "description": "Scope e.g. backend, frontend, docs, agents" },
                 "type": { "type": "string", "description": "Type e.g. feat, fix, chore, docs, refactor", "default": "feat" }
+            },
+            "required": ["message"]
+        }
+    },
+    {
+        "name": "git_verified_sync",
+        "description": "Automatically runs full test suite (pytest & data layer audit), stages all changes, commits, pulls, and pushes to GitHub with 100% automated confidence.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "message": { "type": "string", "description": "Commit message" },
+                "remote": { "type": "string", "default": "origin" }
             },
             "required": ["message"]
         }
@@ -245,18 +301,6 @@ MCP_TOOLS = [
         }
     },
     {
-        "name": "git_sync",
-        "description": "Stage all changes, commit, pull latest changes, and push upstream in one command.",
-        "inputSchema": {
-            "type": "object",
-            "properties": {
-                "message": { "type": "string", "description": "Commit message" },
-                "remote": { "type": "string", "default": "origin" }
-            },
-            "required": ["message"]
-        }
-    },
-    {
         "name": "git_log",
         "description": "Get recent commit history.",
         "inputSchema": {
@@ -270,7 +314,6 @@ MCP_TOOLS = [
 
 
 def run_mcp_server():
-    """Runs a standard MCP JSON-RPC stdio server loop."""
     agent = GitAgent()
 
     for line in sys.stdin:
@@ -293,7 +336,7 @@ def run_mcp_server():
                         "capabilities": { "tools": {} },
                         "serverInfo": {
                             "name": "finshield-git-agent",
-                            "version": "2.0.0"
+                            "version": "2.1.0"
                         }
                     }
                 }
@@ -313,14 +356,14 @@ def run_mcp_server():
                     res = agent.stage_all()
                 elif tool_name == "git_commit":
                     res = agent.commit(args["message"], scope=args.get("scope"), commit_type=args.get("type", "feat"))
+                elif tool_name == "git_verified_sync":
+                    res = agent.sync(args["message"], remote=args.get("remote", "origin"), verify=True)
                 elif tool_name == "git_branch":
                     res = agent.branch(args["name"])
                 elif tool_name == "git_push":
                     res = agent.push(remote=args.get("remote", "origin"), branch=args.get("branch"))
                 elif tool_name == "git_pull":
                     res = agent.pull(remote=args.get("remote", "origin"), branch=args.get("branch"))
-                elif tool_name == "git_sync":
-                    res = agent.sync(args["message"], remote=args.get("remote", "origin"))
                 elif tool_name == "git_log":
                     res = agent.log(limit=args.get("limit", 5))
                 else:
@@ -394,10 +437,14 @@ def main():
     log_parser = subparsers.add_parser("log", help="View commit history")
     log_parser.add_argument("-n", "--limit", type=int, default=5, help="Number of commits")
 
+    # Verify
+    subparsers.add_parser("verify", help="Run automated pre-push test suites")
+
     # Sync
-    sync_parser = subparsers.add_parser("sync", help="One-command Stage, Commit, Pull & Push")
+    sync_parser = subparsers.add_parser("sync", help="One-command Verify, Stage, Commit, Pull & Push")
     sync_parser.add_argument("-m", "--message", required=True, help="Commit message")
     sync_parser.add_argument("--remote", default="origin", help="Remote name")
+    sync_parser.add_argument("--no-verify", action="store_true", help="Skip pre-push verification tests")
 
     args = parser.parse_args()
 
@@ -424,8 +471,12 @@ def main():
         print(agent.pull(args.remote, args.branch))
     elif args.action == "log":
         print(json.dumps(agent.log(args.limit), indent=2))
+    elif args.action == "verify":
+        res = agent.verify_quality()
+        print(json.dumps(res, indent=2))
     elif args.action == "sync":
-        res = agent.sync(args.message, args.remote)
+        verify = not args.no_verify
+        res = agent.sync(args.message, args.remote, verify=verify)
         print(json.dumps(res, indent=2))
 
 

@@ -1,41 +1,72 @@
 # 🤖 FinShield Git Agent & MCP Tooling
 
-The **FinShield Git Agent** automates repository operations for hackathon team collaboration, enabling agents (and humans) to stage, commit, branch, push, and sync changes seamlessly.
+The **FinShield Git Agent** provides dual-mode repository management:
+1. **Interactive CLI**: For team members to easily commit, branch, and sync from the terminal.
+2. **Standard MCP Server**: Allows Antigravity, Claude, Cursor, and autonomous agents to call Git tools directly over JSON-RPC stdio.
 
 ---
 
-## 🚀 Quick CLI Usage
+## 🚀 1. CLI Usage Reference
 
-### 1. Check Status
+### Status
 ```bash
 python agents/git_agent/git_agent.py status
 ```
-Returns structured JSON with branch, staged, unstaged, untracked files, and remote status.
 
-### 2. Conventional Commit
+### Conventional Commit
 ```bash
 python agents/git_agent/git_agent.py commit -m "add hybrid scoring engine" -s backend -t feat
 ```
-Output commit: `feat(backend): add hybrid scoring engine`
 
-### 3. Create Feature Branch
+### Branch Creation & Checkout
 ```bash
 python agents/git_agent/git_agent.py branch feature/analyst-override-ui
 ```
 
-### 4. Set GitHub Remote
+### Remote Push & Pull
 ```bash
-python agents/git_agent/git_agent.py set-remote https://github.com/your-org/finshield.git
+python agents/git_agent/git_agent.py pull
+python agents/git_agent/git_agent.py push
 ```
 
-### 5. One-Command Sync (Stage + Commit + Pull + Push)
+### One-Command Full Sync
 ```bash
 python agents/git_agent/git_agent.py sync -m "feat(api): connect committee voting endpoints"
 ```
 
 ---
 
-## 🔌 MCP Server Configuration
-To use this with Antigravity / Claude / Cursor MCP clients:
-1. Register `agents/git_agent/mcp_git_server.json` in your client's MCP configuration.
-2. The agent will have access to: `git_status`, `git_commit`, `git_branch`, `git_sync`, `git_push`, `git_pull`, `git_set_remote`.
+## 🔌 2. MCP Server Mode
+
+The Git Agent can run directly as an MCP stdio server:
+
+```bash
+python agents/git_agent/git_agent.py --mcp
+```
+
+### MCP Tools Exposed:
+- `git_status`: Returns current branch, staged/unstaged counts, untracked files, and remote status.
+- `git_stage_all`: Stages all modified and untracked files.
+- `git_commit`: Generates structured conventional commits.
+- `git_branch`: Manages feature branch creation and checkouts.
+- `git_push` & `git_pull`: Interacts with remote repository.
+- `git_sync`: Stages, commits, pulls, and pushes in a single atomic action.
+- `git_log`: Retrieves structured commit history.
+
+---
+
+## ⚙️ 3. Registering in `mcp_config.json`
+
+To register this local Git Agent alongside GitHub, Postman, and Atlassian servers:
+
+```json
+"finshield-git-agent": {
+  "$typeName": "exa.cascade_plugins_pb.CascadePluginCommandTemplate",
+  "command": "python",
+  "args": [
+    "agents/git_agent/git_agent.py",
+    "--mcp"
+  ],
+  "env": {}
+}
+```

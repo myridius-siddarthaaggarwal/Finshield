@@ -98,11 +98,17 @@ FinShield is an **Enterprise AI Financial Crime Risk Assessment Workbench** that
 #### 🖱️ Click & Visual Instructions:
 1. **Switch Persona**: Click the top-right persona switcher and select **Priya Sharma (Submitter)**.
 2. **Click "New Intake"** in the top navigation bar.
-3. **Fill in the Form**:
+3. **Fill in the Form** (Cheat-Sheet):
    - **Proposal Title**: Type `Instant Global P2P Wallet`
    - **Banking Division**: Select `Payments`
    - **Change Type**: Select `New Product Launch`
+   - **Detailed Proposal Description & Features**: Copy & paste this text:
+     ```text
+     Launch instant P2P cross-border digital wallet. Customers are verified automatically in 60 seconds with no manual review. Transfers settle instantly 24/7 with no initial daily limits. Open to all retail users across UK and overseas corridors.
+     ```
    - **Target Geographies**: Type `United Kingdom, Nigeria`
+   - **Verification Speed**: `Instant (60 seconds digital)`
+   - **Transaction Limits**: `No limits proposed at launch`
 4. **The "Wow" Demo Moment**:
    - As soon as you type `Nigeria` or `UAE`, point to the screen:  
      *Notice the live amber warning badge:* **⚠️ FATF Increased Monitoring Corridor detected. Enhanced Due Diligence (EDD) required.**

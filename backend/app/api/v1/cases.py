@@ -16,8 +16,15 @@ from app.services.scoring_engine import (
 )
 from app.services.ai_service import score_risk_proposal_ai
 from app.services.token_tracker import record_token_usage
+from app.services.requirement_expansion_service import expand_vague_brief, get_preseeded_vague_brief_benchmarks
 
 router = APIRouter(prefix="/cases", tags=["Cases & Intake"])
+
+class BriefExpansionRequest(BaseModel):
+    vague_brief: str
+    division: Optional[str] = "Consumer Banking"
+    change_type: Optional[str] = "New Product Launch"
+    target_geographies: Optional[List[str]] = None
 
 class CaseCreateRequest(BaseModel):
     title: str
@@ -30,6 +37,26 @@ class CaseCreateRequest(BaseModel):
     target_customers: Optional[str] = None
     verification_speed: Optional[str] = "Standard"
     transaction_limits_desc: Optional[str] = "Standard"
+    working_specification: Optional[dict] = None
+
+@router.get("/vague-brief-benchmarks")
+def list_vague_brief_benchmarks():
+    """Returns realistic pre-seeded benchmark vague briefs for live evaluator testing."""
+    return get_preseeded_vague_brief_benchmarks()
+
+@router.post("/expand-brief")
+async def expand_brief_endpoint(req: BriefExpansionRequest):
+    """
+    Autonomous Requirement Expansion:
+    Transforms a 1-2 sentence vague brief into a full 360-degree banking technical
+    and regulatory working specification using Governed Data Layer and Public APIs.
+    """
+    return await expand_vague_brief(
+        vague_brief=req.vague_brief,
+        division=req.division or "Consumer Banking",
+        change_type=req.change_type or "New Product Launch",
+        target_geographies=req.target_geographies
+    )
 
 @router.get("/")
 def list_cases(division: Optional[str] = None, status_filter: Optional[str] = None, db: Session = Depends(get_db)):
@@ -112,7 +139,8 @@ async def create_new_case(req: CaseCreateRequest, db: Session = Depends(get_db))
         target_customers=req.target_customers,
         verification_speed=req.verification_speed,
         transaction_limits_desc=req.transaction_limits_desc,
-        status=CaseStatus.SUBMITTED
+        status=CaseStatus.SUBMITTED,
+        ai_draft_memo=req.working_specification
     )
     db.add(new_case)
     db.flush()
@@ -125,6 +153,19 @@ async def create_new_case(req: CaseCreateRequest, db: Session = Depends(get_db))
         actor_role="Submitter",
         description=f"Change proposal '{req.title}' submitted for {req.division}."
     ))
+
+    # Log requirement expansion if present
+    if req.working_specification:
+        matrix_len = len(req.working_specification.get("regulatory_matrix", []))
+        public_hits = len(req.working_specification.get("public_api_checks", []))
+        db.add(AuditEvent(
+            case_id=new_case.id,
+            event_type="REQUIREMENT_EXPANSION",
+            actor_name="FinShield AI SME",
+            actor_role="AI System",
+            description=f"Vague brief autonomously expanded into 360° Bank Working Specification. Layered {matrix_len} regulatory frameworks & {public_hits} Public Compliance API checks.",
+            details_json=req.working_specification
+        ))
 
     # Log auto-screening
     screening_desc = f"Screening result: {screening_result['screening_status']}. Highest risk tier: {screening_result['highest_risk_tier']}."
@@ -222,9 +263,21 @@ async def create_new_case(req: CaseCreateRequest, db: Session = Depends(get_db))
         details_json={"gate_evaluation": gate_eval}
     ))
 
-    # Record token usage
-    record_token_usage(db, new_case.id, "document_parsing", 750, 320, 450)
-    record_token_usage(db, new_case.id, "risk_scoring", 620, 410, 380)
+    # Record token usage per specialized micro-agent
+    agent_telemetry = ai_output.get("agent_telemetry", {})
+    if agent_telemetry:
+        for agent_key in ["agent_aml", "agent_cft", "agent_fraud", "agent_compliance"]:
+            metrics = agent_telemetry.get(agent_key, {})
+            record_token_usage(
+                db=db,
+                case_id=new_case.id,
+                step_name=agent_key,
+                input_tokens=metrics.get("input_tokens", 150),
+                output_tokens=metrics.get("output_tokens", 80),
+                saved_tokens=int(agent_telemetry.get("saved_tokens", 1200) / 4)
+            )
+    else:
+        record_token_usage(db, new_case.id, "risk_scoring", 620, 410, 380)
 
     db.commit()
     db.refresh(new_case)

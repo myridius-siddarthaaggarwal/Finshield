@@ -30,6 +30,7 @@
 | 📖 **[User Guide & Presentation Manual](file:///docs/USER_GUIDE.md)** | Step-by-step walkthrough for all personas & demo cases | Presenters & Judges |
 | 🛠️ **[Developer & Local Setup Guide](file:///docs/DEVELOPER_GUIDE.md)** | Local environment setup, test suite, and how to extend code | Teammates & Developers |
 | 🔑 **[API Keys & Configuration Reference](file:///docs/API_KEYS_AND_CONFIG.md)** | Claude API keys, environment variables & offline fallback | Developers & DevOps |
+| 🗺️ **[Future Architectural Roadmap](file:///docs/FUTURE_ROADMAP.md)** | Phase 2 planned extensions: 3-pillar briefing memos, SAR automation | Evaluators & Judges |
 
 ---
 
@@ -40,39 +41,42 @@ FinShield is built on a deliberate **Hybrid Architecture** that strictly separat
 ```mermaid
 graph TB
     subgraph "Frontend (React + Vite + Tailwind + Recharts)"
-        UI_Submitter["Submitter Intake Form"]
-        UI_Analyst["Analyst Risk Workbench & What-If Sandbox"]
+        UI_Submitter["Submitter Intake Form + AI SME Expander"]
+        UI_Analyst["Analyst Risk Workbench & Sandbox"]
         UI_Committee["3-Member Governance Voting Panel"]
-        UI_Hub["Evaluation & 'Why Not AI' Hub"]
+        UI_Hub["Evaluation & 10% Rubric Hub"]
     end
 
-    subgraph "Backend API (FastAPI + Python)"
+    subgraph "Intake & Autonomous Requirement Expansion"
+        SME["AI SME Requirement Expander (v1.0.0)"]
+        OpenAPI["Public Compliance APIs (OpenSanctions + FATF/OFAC)"]
+    end
+
+    subgraph "Deterministic Governance Core (FastAPI + Python)"
         FSM["Deterministic State Machine (FSM)"]
         Gate["Confidence Gate (< 70% Manual Unanchored)"]
+        CB["Circuit Breaker Loop Guard (MAX_DEPTH=1)"]
         Scoring["Deterministic Weighted Risk Math"]
         Audit["ACID Immutable Audit Logger"]
     end
 
-    subgraph "Governed Data Layer"
-        FATF["FATF Geography Risk Table"]
-        Regs["Regulatory Frameworks (FATF, FCA, NACHA, MiCA, FinCEN)"]
-        Controls["Governed Control Library"]
+    subgraph "Decomposed Micro-Agent Fleet (Parallel Execution)"
+        AML["agent_aml (35% - FATF R.10 CDD/Mule Rings)"]
+        CFT["agent_cft (20% - FATF R.6/15 Sanctions & Travel Rule)"]
+        Fraud["agent_fraud (25% - FCA Duty & UK PSR 50:50 Scam Rules)"]
+        Comp["agent_compliance (20% - MiCA CASP & OCC TPRM 2023)"]
     end
 
-    subgraph "AI Reasoning (Claude Sonnet 3.7)"
-        Prompts["Semantic Versioned Prompts (prompts/vX.Y.Z)"]
-        Parser["Document & Spec Extractor"]
-        Reasoner["Multi-Dimension Risk Reasoner"]
-    end
-
-    UI_Submitter --> FSM
+    UI_Submitter --> SME
+    SME --> OpenAPI
+    SME --> FSM
     UI_Analyst --> FSM
     UI_Committee --> FSM
     FSM --> Gate
-    Gate --> Reasoner
-    Reasoner --> Prompts
-    Reasoner -.-> Governed Data Layer
-    Reasoner --> Scoring
+    Gate --> AML & CFT & Fraud & Comp
+    AML -. Conditional Peer Consultation .-> CB
+    Fraud -. Conditional Peer Consultation .-> CB
+    CB --> Scoring
     Scoring --> Audit
 ```
 
@@ -82,11 +86,12 @@ graph TB
 | :--- | :--- | :--- |
 | **Workflow State Machine** | **Deterministic** | Transitions (`SUBMITTED` &rarr; `IN_REVIEW` &rarr; `COMMITTEE` &rarr; `DECIDED`) must be 100% predictable without probabilistic skipping. |
 | **Audit Log Writer** | **Deterministic** | Zero tolerance for omissions. Missing one compliance entry is a regulatory breach; AI cannot provide ACID database write guarantees. |
+| **Inter-Agent Loop Guard** | **Deterministic Circuit Breaker** | `MAX_INTERACTION_DEPTH = 1` hardstop stops circular switching loops between peer agents, eliminating runaway token consumption. |
 | **Role-Based Access Control (RBAC)** | **Deterministic** | Cryptographic token checks, not probabilistic guesses. |
-| **Sanctions & FATF List Lookup** | **Deterministic** | A country or entity IS or IS NOT on the sanctions list. Exact matching eliminates hallucination risk. |
+| **Sanctions & FATF List Lookup** | **Deterministic + Public API** | Exact matching on OpenSanctions & OFAC SDN registers eliminates hallucination risk. |
 | **Final Risk Math** | **Deterministic** | $\text{Overall Risk} = \sum (\text{Dimension Score} \times \text{Weight})$. Weighted average is pure math; doing math via LLM causes calculation drift. |
 | **Confidence Threshold Gate** | **Deterministic Gate** | Below $70\%$ confidence, the system hides the AI score to prevent analyst anchoring bias. |
-| **Risk Dimension Reasoning** | **AI (Probabilistic)** | Weighing FATF/FCA/OCC regulatory frameworks against product context requires domain reasoning. |
+| **Domain Risk Reasoning** | **Decomposed Micro-Agents** | 4 specialized agents evaluate FATF/FCA/OCC/MiCA rules with ~75% token savings over monolithic prompts. |
 
 ---
 
@@ -119,11 +124,10 @@ py -m venv .venv
 # On Windows PowerShell:
 .\.venv\Scripts\pip install -r backend\requirements.txt
 
-# Seed Database with 13 users, 7 benchmark cases & audit histories
-.\.venv\Scripts\python -m app.db.init_db
-
-# Run FastAPI Server (Port 8000)
-.\.venv\Scripts\python -m uvicorn app.main:app --reload --port 8000
+# Seed Database & Run Backend API (Port 8000)
+cd backend
+..\.venv\Scripts\python -m app.db.init_db
+..\.venv\Scripts\python -m uvicorn app.main:app --reload --port 8000
 ```
 
 ### 2. Set Up & Run Frontend

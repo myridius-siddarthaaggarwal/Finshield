@@ -93,31 +93,35 @@ FinShield is an **Enterprise AI Financial Crime Risk Assessment Workbench** that
 
 ---
 
-### ⏱️ Act 2: Submitter Flow & Real-Time Corridor Screening (1:30 – 2:45)
+### ⏱️ Act 2: Submitter Flow, Autonomous Requirement Expansion & Public APIs (1:30 – 2:45)
+
+> 🏆 **Key Judging Highlight (10% Criteria: Context Engineering & Requirement Expansion)**:  
+> Demonstrate how FinShield takes an incomplete, vague product brief without an SME, layers in domain knowledge from FATF and Public Open APIs, and expands it into an enterprise 360° specification.
 
 #### 🖱️ Click & Visual Instructions:
 1. **Switch Persona**: Click the top-right persona switcher and select **Priya Sharma (Submitter)**.
 2. **Click "New Intake"** in the top navigation bar.
-3. **Fill in the Form** (Cheat-Sheet):
-   - **Proposal Title**: Type `Instant Global P2P Wallet`
-   - **Banking Division**: Select `Payments`
-   - **Change Type**: Select `New Product Launch`
-   - **Detailed Proposal Description & Features**: Copy & paste this text:
-     ```text
-     Launch instant P2P cross-border digital wallet. Customers are verified automatically in 60 seconds with no manual review. Transfers settle instantly 24/7 with no initial daily limits. Open to all retail users across UK and overseas corridors.
-     ```
-   - **Target Geographies**: Type `United Kingdom, Nigeria`
-   - **Verification Speed**: `Instant (60 seconds digital)`
-   - **Transaction Limits**: `No limits proposed at launch`
-4. **The "Wow" Demo Moment**:
-   - As soon as you type `Nigeria` or `UAE`, point to the screen:  
+3. **The "Absent SME" Live Expansion Demo**:
+   - Above the description box, point to the card: **AI SME: Autonomous Requirement Expander**.
+   - Click the preset button: **`⚡ Instant Cross-Border P2P (UK & Nigeria)`**.
+   - Notice how the brief is just 2 vague lines!
+   - Click **`[ Expand Vague Brief into 360° Working Specification ]`**.
+   - **🗣️ What to Say to the Judges**:
+     > *"Judges, 10% of the judging is how we research incomplete requirements and layer domain knowledge without an SME. In digital banks, product managers don't have compliance SMEs either! Watch what FinShield does:"*
+   - Point to the live expansion card:
+     1. **Identified SME Gaps**: Highlights missing settlement rails and velocity structuring risks.
+     2. **Public Compliance Registry Checks**: Cross-references OpenSanctions and FATF open registers in real-time.
+     3. **Governing Regulatory Matrix**: Layers in PSR APP Fraud 2024 and FATF R.16 Travel Rule.
+   - Click **`[ Apply 360° Working Specification to Proposal Form ]`** — all parameters populate automatically!
+4. **The Live Corridor Warning Moment**:
+   - Point to the screen:  
      *Notice the live amber warning badge:* **⚠️ FATF Increased Monitoring Corridor detected. Enhanced Due Diligence (EDD) required.**
 5. **Click "Run FinShield Assessment"**:
    - Watch the animated 3-stage intake orchestrator:
      - **Stage 1**: Deterministic Sanctions & FATF Screening
      - **Stage 2**: AI Document & Spec Extraction
      - **Stage 3**: Multi-Dimension Scoring & Traceability Logging
-   - The newly generated case opens automatically!
+   - The newly generated case opens automatically with its full context packet preserved!
 
 ---
 

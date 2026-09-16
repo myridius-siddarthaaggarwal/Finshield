@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 from typing import List, Dict, Any
 from app.core.config import settings
+from app.services.public_compliance_api import get_calibrated_public_record
 
 def load_geography_risk_table() -> List[Dict[str, Any]]:
     geo_path = settings.DATA_LAYER_DIR / "geography_risk_table.json"
@@ -65,6 +66,9 @@ def screen_geographies(geographies: List[str]) -> Dict[str, Any]:
     is_sanctioned = highest_risk_tier == "CRITICAL_SANCTIONED"
     has_high_risk = len(flags) > 0
 
+    # Public Open Compliance API registry checks
+    public_verifications = [get_calibrated_public_record(g, None, "jurisdiction") for g in geographies]
+
     return {
         "screened_count": len(geographies),
         "highest_risk_tier": highest_risk_tier,
@@ -72,5 +76,6 @@ def screen_geographies(geographies: List[str]) -> Dict[str, Any]:
         "is_sanctioned_blocked": is_sanctioned,
         "requires_edd": has_high_risk,
         "flags": flags,
+        "public_verifications": public_verifications,
         "screening_status": "SANCTIONS_BLOCKED" if is_sanctioned else ("FLAGGED_FOR_EDD" if has_high_risk else "CLEARED")
     }

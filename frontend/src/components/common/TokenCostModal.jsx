@@ -91,17 +91,30 @@ export const TokenCostModal = ({ isOpen, onClose, caseId = null }) => {
 
               {/* Step breakdown */}
               <div className="space-y-2">
-                <div className="text-xs font-medium text-slate-300">Step-by-Step Breakdown</div>
+                <div className="text-xs font-medium text-slate-300">Specialized Micro-Agent Footprint</div>
                 <div className="space-y-1.5 text-xs">
-                  {Object.entries(data.breakdown_by_step || {}).map(([step, val]) => (
-                    <div key={step} className="flex items-center justify-between p-2 rounded bg-slate-800/40 border border-slate-800">
-                      <span className="capitalize text-slate-300 font-mono">{step.replace(/_/g, ' ')}</span>
-                      <div className="flex items-center gap-3">
-                        <span className="font-mono text-slate-400">{val.total} tokens</span>
-                        <span className="font-mono font-semibold text-emerald-400">${val.cost.toFixed(4)}</span>
+                  {Object.entries(data.breakdown_by_step || {}).map(([step, val]) => {
+                    const formatAgentName = (s) => {
+                      switch (s) {
+                        case 'agent_aml': return '🛡️ AML Specialist Agent';
+                        case 'agent_cft': return '🎯 CFT & Sanctions Agent';
+                        case 'agent_fraud': return '⚡ Fraud & Scams Agent';
+                        case 'agent_compliance': return '📜 Compliance Specialist Agent';
+                        case 'document_parsing': return '📄 Doc & Spec Parser';
+                        case 'risk_scoring': return '⚖️ Multi-Dimension Reasoning';
+                        default: return s.replace(/_/g, ' ');
+                      }
+                    };
+                    return (
+                      <div key={step} className="flex items-center justify-between p-2 rounded bg-slate-800/40 border border-slate-800">
+                        <span className="capitalize text-slate-300 font-mono text-xs">{formatAgentName(step)}</span>
+                        <div className="flex items-center gap-3">
+                          <span className="font-mono text-slate-400">{val.total} tokens</span>
+                          <span className="font-mono font-semibold text-emerald-400">${val.cost.toFixed(4)}</span>
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </>

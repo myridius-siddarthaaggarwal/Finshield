@@ -26,6 +26,8 @@ export const casesApi = {
   getCases: (params) => api.get('/cases', { params }),
   getCaseDetail: (id) => api.get(`/cases/${id}`),
   createCase: (data) => api.post('/cases', data),
+  expandBrief: (data) => api.post('/cases/expand-brief', data),
+  getVagueBenchmarks: () => api.get('/cases/vague-brief-benchmarks'),
 };
 
 export const assessmentApi = {

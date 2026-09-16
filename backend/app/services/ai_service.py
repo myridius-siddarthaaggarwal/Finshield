@@ -10,6 +10,7 @@ from pathlib import Path
 from typing import Dict, Any, Optional
 import httpx
 from app.core.config import settings
+from app.services.agents.orchestrator import orchestrator
 
 logger = logging.getLogger(__name__)
 
@@ -37,39 +38,19 @@ async def score_risk_proposal_ai(
     verification: str
 ) -> Dict[str, Any]:
     """
-    Executes AI Risk Reasoning across all 4 dimensions.
-    Gracefully falls back to domain-calibrated deterministic response if API key is missing or offline.
+    Executes AI Risk Reasoning across all 4 dimensions using the
+    Domain-Specialized Micro-Agent Fleet executed in parallel via asyncio.gather().
+    Maximizes token efficiency, eliminates prompt bloat, and provides domain precision.
     """
-    prompt_template = load_prompt_template("risk_scoring")
-    
-    # Check if live Anthropic API key is available
-    if settings.ANTHROPIC_API_KEY and len(settings.ANTHROPIC_API_KEY) > 10:
-        try:
-            async with httpx.AsyncClient(timeout=15.0) as client:
-                headers = {
-                    "x-api-key": settings.ANTHROPIC_API_KEY,
-                    "anthropic-version": "2023-06-01",
-                    "content-type": "application/json"
-                }
-                user_content = f"Title: {case_title}\nDivision: {division}\nChange Type: {change_type}\nDescription: {description}\nGeographies: {geographies}\nTarget Customers: {customers}\nVerification: {verification}"
-                
-                payload = {
-                    "model": settings.LLM_MODEL,
-                    "max_tokens": 2048,
-                    "temperature": settings.LLM_TEMPERATURE,
-                    "system": prompt_template.get("system_prompt", ""),
-                    "messages": [{"role": "user", "content": user_content}]
-                }
-                
-                res = await client.post("https://api.anthropic.com/v1/messages", headers=headers, json=payload)
-                if res.status_code == 200:
-                    raw_text = res.json()["content"][0]["text"]
-                    return json.loads(raw_text)
-        except Exception as e:
-            logger.warning(f"Claude API call failed ({e}). Activating Graceful Degradation Engine.")
-
-    # GRACEFUL DEGRADATION: Domain-calibrated deterministic reasoning fallback
-    return generate_fallback_risk_assessment(case_title, division, change_type, geographies, verification)
+    return await orchestrator.run_parallel_assessment(
+        case_title=case_title,
+        division=division,
+        change_type=change_type,
+        description=description,
+        geographies=geographies,
+        customers=customers,
+        verification=verification
+    )
 
 
 def generate_fallback_risk_assessment(

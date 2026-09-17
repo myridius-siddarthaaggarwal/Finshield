@@ -8,8 +8,8 @@ Layers in domain knowledge from the Governed Data Layer and Public Open Complian
 import json
 import logging
 from typing import Dict, Any, List, Optional
-import httpx
 from app.core.config import settings
+from app.services.llm_client import call_llm
 from app.services.ai_service import load_prompt_template
 from app.services.public_compliance_api import check_public_sanctions_and_compliance
 
@@ -24,7 +24,7 @@ async def expand_vague_brief(
     """
     Autonomous Requirement Expansion:
     1. Cross-references target corridors/assets against Public Compliance APIs.
-    2. Uses AI reasoning (or calibrated domain fallback) to expand vague brief into full spec.
+    2. Uses AI reasoning (Gemini Pro / Claude or calibrated fallback) to expand vague brief into full spec.
     3. Fills in absent SME gaps: settlement rails, KYC tiers, velocity bounds, regulatory matrices.
     """
     geos = target_geographies or ["United Kingdom"]
@@ -41,39 +41,29 @@ async def expand_vague_brief(
         crypto_check = await check_public_sanctions_and_compliance("USDT / Virtual Assets", category="asset")
         public_api_checks.append(crypto_check)
 
-    # 2. Attempt Live Claude Sonnet Reasoning if key configured
+    # 2. Attempt Live Gemini / Claude Reasoning if configured
     prompt_template = load_prompt_template("requirement_expansion")
-    if settings.ANTHROPIC_API_KEY and len(settings.ANTHROPIC_API_KEY) > 10:
-        try:
-            async with httpx.AsyncClient(timeout=15.0) as client:
-                headers = {
-                    "x-api-key": settings.ANTHROPIC_API_KEY,
-                    "anthropic-version": "2023-06-01",
-                    "content-type": "application/json"
-                }
-                user_msg = (
-                    f"Vague Brief: {vague_brief}\n"
-                    f"Division: {division}\n"
-                    f"Change Type: {change_type}\n"
-                    f"Target Geographies: {', '.join(geos)}\n"
-                    f"Public Compliance Findings: {json.dumps(public_api_checks)}"
-                )
-                payload = {
-                    "model": settings.LLM_MODEL,
-                    "max_tokens": 2048,
-                    "temperature": settings.LLM_TEMPERATURE,
-                    "system": prompt_template.get("system_prompt", ""),
-                    "messages": [{"role": "user", "content": user_msg}]
-                }
-                res = await client.post("https://api.anthropic.com/v1/messages", headers=headers, json=payload)
-                if res.status_code == 200:
-                    raw_text = res.json()["content"][0]["text"]
-                    parsed = json.loads(raw_text)
-                    parsed["public_api_checks"] = public_api_checks
-                    parsed["original_brief"] = vague_brief
-                    return parsed
-        except Exception as e:
-            logger.warning(f"Live AI brief expansion failed ({e}). Using Calibrated Domain Expansion Engine.")
+    user_msg = (
+        f"Vague Brief: {vague_brief}\n"
+        f"Division: {division}\n"
+        f"Change Type: {change_type}\n"
+        f"Target Geographies: {', '.join(geos)}\n"
+        f"Public Compliance Findings: {json.dumps(public_api_checks)}"
+    )
+    
+    parsed_res, _, _ = await call_llm(
+        system_prompt=prompt_template.get("system_prompt", ""),
+        user_prompt=user_msg,
+        max_tokens=2048,
+        temperature=settings.LLM_TEMPERATURE,
+        json_mode=True,
+        timeout=15.0
+    )
+    
+    if parsed_res is not None and isinstance(parsed_res, dict):
+        parsed_res["public_api_checks"] = public_api_checks
+        parsed_res["original_brief"] = vague_brief
+        return parsed_res
 
     # 3. Domain-Calibrated Expansion Engine (Guarantees 100% Demo Resilience)
     expanded = generate_calibrated_expansion(vague_brief, division, change_type, geos, public_api_checks)

@@ -8,8 +8,8 @@ import json
 import logging
 from pathlib import Path
 from typing import Dict, Any, Tuple
-import httpx
 from app.core.config import settings
+from app.services.llm_client import call_llm
 
 logger = logging.getLogger(__name__)
 
@@ -31,36 +31,21 @@ class BaseMicroAgent:
     async def execute(self, user_content: str, fallback_data: Dict[str, Any]) -> Tuple[Dict[str, Any], int, int]:
         """
         Executes the micro-agent with strictly scoped input context.
+        Uses Gemini Pro / Claude if configured, otherwise falls back gracefully.
         Returns (result_dict, input_tokens, output_tokens).
         """
         system_prompt = self.prompt_config.get("system_prompt", "")
         
-        if settings.ANTHROPIC_API_KEY and len(settings.ANTHROPIC_API_KEY) > 10:
-            try:
-                async with httpx.AsyncClient(timeout=8.0) as client:
-                    headers = {
-                        "x-api-key": settings.ANTHROPIC_API_KEY,
-                        "anthropic-version": "2023-06-01",
-                        "content-type": "application/json"
-                    }
-                    payload = {
-                        "model": settings.LLM_MODEL,
-                        "max_tokens": 256, # Ultra-lean output constraint
-                        "temperature": settings.LLM_TEMPERATURE,
-                        "system": system_prompt,
-                        "messages": [{"role": "user", "content": user_content}]
-                    }
-                    res = await client.post("https://api.anthropic.com/v1/messages", headers=headers, json=payload)
-                    if res.status_code == 200:
-                        data = res.json()
-                        raw_text = data["content"][0]["text"]
-                        usage = data.get("usage", {})
-                        inp = usage.get("input_tokens", len(user_content.split()) * 2)
-                        outp = usage.get("output_tokens", len(raw_text.split()) * 2)
-                        parsed = json.loads(raw_text)
-                        return parsed, inp, outp
-            except Exception as e:
-                logger.warning(f"{self.agent_id} API call failed ({e}). Using domain fallback.")
+        parsed_res, inp, outp = await call_llm(
+            system_prompt=system_prompt,
+            user_prompt=user_content,
+            max_tokens=256,
+            temperature=settings.LLM_TEMPERATURE,
+            json_mode=True
+        )
+
+        if parsed_res is not None and isinstance(parsed_res, dict):
+            return parsed_res, inp, outp
 
         # Graceful Domain Fallback
         # Measure estimated tokens saved via offline/cached execution

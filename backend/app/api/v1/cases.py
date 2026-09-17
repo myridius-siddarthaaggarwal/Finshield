@@ -17,6 +17,7 @@ from app.services.scoring_engine import (
 from app.services.ai_service import score_risk_proposal_ai
 from app.services.token_tracker import record_token_usage
 from app.services.requirement_expansion_service import expand_vague_brief, get_preseeded_vague_brief_benchmarks
+from app.services.llm_client import get_active_provider_label
 
 router = APIRouter(prefix="/cases", tags=["Cases & Intake"])
 
@@ -257,7 +258,7 @@ async def create_new_case(req: CaseCreateRequest, db: Session = Depends(get_db))
     db.add(AuditEvent(
         case_id=new_case.id,
         event_type="AI_SCORING",
-        actor_name="Claude Sonnet (v1.2.0)",
+        actor_name=get_active_provider_label(),
         actor_role="AI",
         description=f"AI risk evaluation completed. Inherent score: {inherent_score} ({inherent_tier}). Confidence: {int(avg_confidence*100)}%.",
         details_json={"gate_evaluation": gate_eval}

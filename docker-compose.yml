@@ -12,7 +12,10 @@ services:
       - PROJECT_NAME=FinShield
       - DATABASE_URL=sqlite:///./finshield.db
       - SECRET_KEY=finshield-secret-key-super-secure-change-in-production-2026
+      - LLM_PROVIDER=${LLM_PROVIDER:-auto}
+      - GEMINI_API_KEY=${GEMINI_API_KEY:-}
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}
+      - LLM_MODEL=${LLM_MODEL:-gemini-1.5-pro}
       - CORS_ORIGINS=http://localhost:5173,http://localhost:3000,http://localhost:80
     volumes:
       - ./backend/finshield.db:/app/backend/finshield.db

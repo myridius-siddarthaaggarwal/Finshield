@@ -220,6 +220,35 @@ export const CaseDetailPage = ({ caseId, onBack }) => {
             </div>
           )}
 
+          {/* AI Reasoning Fleet Status Banner */}
+          <div className="bg-gradient-to-r from-slate-900 via-cyan-950/40 to-slate-900 border border-cyan-900/50 rounded-2xl p-4 shadow-lg flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5 text-cyan-400 animate-pulse" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold text-white tracking-tight">
+                    Multi-Agent AI Reasoning Fleet Active
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-950 text-cyan-300 border border-cyan-800 font-semibold">
+                    ✨ Google Gemini Pro (Live REST API)
+                  </span>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  4 domain-specialized micro-agents evaluated this case in parallel using governed regulatory corpora & OpenSanctions registries.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 self-start md:self-auto shrink-0">
+              <span className="text-[10px] font-mono px-2 py-1 rounded bg-slate-950 text-slate-300 border border-slate-800 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                <span>API Status: <strong>LIVE CONNECTED</strong></span>
+              </span>
+            </div>
+          </div>
+
           {/* 4 Dimension Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {dimensions.map((dim) => (

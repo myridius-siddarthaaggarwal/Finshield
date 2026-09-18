@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { Shield, Coins, Sparkles, User, ChevronDown, CheckCircle2, AlertTriangle, Layers, BarChart3, PlusCircle } from 'lucide-react';
+import { Shield, Coins, Sparkles, User, ChevronDown, CheckCircle2, AlertTriangle, Layers, BarChart3, PlusCircle, Play } from 'lucide-react';
 import { TokenCostModal } from './TokenCostModal';
+import { AutopilotDemoModal } from './AutopilotDemoModal';
 
-export const Navbar = ({ activeTab, setActiveTab }) => {
+export const Navbar = ({ activeTab, setActiveTab, onSelectCase, demoModalOpen: externalDemoOpen, setDemoModalOpen: setExternalDemoOpen }) => {
   const { currentUser, allUsers, switchPersona } = useAuth();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [tokenModalOpen, setTokenModalOpen] = useState(false);
+  const [internalDemoOpen, setInternalDemoOpen] = useState(false);
+
+  const demoModalOpen = externalDemoOpen !== undefined ? externalDemoOpen : internalDemoOpen;
+  const setDemoModalOpen = setExternalDemoOpen || setInternalDemoOpen;
 
   const getRoleBadge = (role) => {
     switch (role) {
@@ -62,7 +67,7 @@ export const Navbar = ({ activeTab, setActiveTab }) => {
                 }`}
               >
                 <Layers className="w-4 h-4" />
-                Case Portfolio (7 Cases)
+                Case Portfolio
               </button>
 
               <button
@@ -93,10 +98,20 @@ export const Navbar = ({ activeTab, setActiveTab }) => {
 
           {/* Right Controls */}
           <div className="flex items-center gap-3">
+            {/* 🎬 1-Click Autopilot Live Demo Button */}
+            <button
+              onClick={() => setDemoModalOpen(true)}
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-600 via-blue-600 to-purple-600 hover:from-cyan-500 hover:to-purple-500 text-xs font-bold text-white shadow-md shadow-cyan-500/20 border border-cyan-400/30 transition-all hover:scale-[1.02] active:scale-95"
+              title="Click to run an automated 5-persona live demo from Gemini expansion to committee sign-off"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-cyan-200 animate-pulse" />
+              <span>⚡ Autopilot Demo</span>
+            </button>
+
             {/* Live Token Counter Badge */}
             <button
               onClick={() => setTokenModalOpen(true)}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-cyan-500/30 text-xs font-mono text-cyan-300 hover:bg-slate-800 transition-all shadow-sm group"
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-cyan-500/30 text-xs font-mono text-cyan-300 hover:bg-slate-800 transition-all shadow-sm group"
               title="Click to view live Token Telemetry & Cost Optimization"
             >
               <Coins className="w-3.5 h-3.5 text-cyan-400 group-hover:rotate-12 transition-transform" />
@@ -164,6 +179,14 @@ export const Navbar = ({ activeTab, setActiveTab }) => {
       </header>
 
       <TokenCostModal isOpen={tokenModalOpen} onClose={() => setTokenModalOpen(false)} />
+      <AutopilotDemoModal 
+        isOpen={demoModalOpen} 
+        onClose={() => setDemoModalOpen(false)} 
+        onCaseCreated={(caseId) => {
+          if (onSelectCase) onSelectCase(caseId);
+          else setActiveTab('case-detail');
+        }} 
+      />
     </>
   );
 };

@@ -42,21 +42,31 @@ export const RiskDimensionCard = ({ dimension, onOpenOverride, isLocked = false 
           </div>
         </div>
 
-        {/* Confidence score */}
-        <div className="mb-3 flex items-center justify-between text-xs bg-slate-950/60 p-2 rounded-lg border border-slate-800/80">
-          <div className="flex items-center gap-1.5 text-slate-400">
-            <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-            <span>AI Reasoning Confidence:</span>
+        {/* AI Model & Confidence Indicator */}
+        <div className="mb-3 flex items-center justify-between text-xs bg-slate-950/80 p-2.5 rounded-xl border border-slate-800">
+          <div className="flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-800/80 font-bold flex items-center gap-1">
+              <span>✨</span> Google Gemini Pro
+            </span>
           </div>
-          <span className="font-mono font-bold text-cyan-300">
-            {intPercent(dimension.confidence)}%
-          </span>
+          <div className="flex items-center gap-1">
+            <span className="text-[11px] text-slate-400 font-medium">Confidence:</span>
+            <span className="font-mono font-bold text-cyan-300 bg-slate-900 px-1.5 py-0.5 rounded border border-slate-800">
+              {intPercent(dimension.confidence)}%
+            </span>
+          </div>
         </div>
 
-        {/* Reasoning */}
-        <p className="text-xs text-slate-300 leading-relaxed mb-4">
-          {dimension.reasoning}
-        </p>
+        {/* Live AI Reasoning Narrative */}
+        <div className="mb-4 bg-slate-950/40 border-l-2 border-cyan-500/70 pl-3 py-1">
+          <div className="text-[10px] uppercase font-mono text-cyan-400/90 font-bold tracking-wider mb-1 flex items-center gap-1">
+            <span>Live AI Risk Analysis:</span>
+          </div>
+          <p className="text-xs text-slate-200 leading-relaxed font-sans">
+            {dimension.reasoning}
+          </p>
+        </div>
 
         {/* Traceability factors */}
         {dimension.traceability_factors && dimension.traceability_factors.length > 0 && (

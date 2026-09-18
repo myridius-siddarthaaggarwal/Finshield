@@ -65,3 +65,7 @@ def root():
         "governed_data_layer": "Active (FATF/FCA/OCC/FinCEN 2026)",
         "docs_url": "/docs"
     }
+
+@app.get("/health")
+def health():
+    return {"status": "healthy", "service": "FinShield"}

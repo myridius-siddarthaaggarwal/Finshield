@@ -86,13 +86,19 @@ async def _call_gemini_api(
     json_mode: bool,
     timeout: float
 ) -> Tuple[str, int, int]:
-    """Invokes Google Gemini REST API generateContent endpoint."""
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
-    headers = {"Content-Type": "application/json"}
+    """Invokes Google Gemini REST API generateContent endpoint with automatic model fallback."""
+    # Build candidate model list with requested model first
+    candidate_models = [model]
+    for alt in ["gemini-3.5-flash", "gemini-3.5-flash-lite", "gemini-3-flash-preview", "gemini-3.6-flash"]:
+        if alt not in candidate_models:
+            candidate_models.append(alt)
+
+    # Ensure token budget is sufficient for complete JSON generation
+    out_tokens = max(max_tokens, 1536)
 
     generation_config: Dict[str, Any] = {
         "temperature": temperature,
-        "maxOutputTokens": max_tokens,
+        "maxOutputTokens": out_tokens,
     }
     if json_mode:
         generation_config["responseMimeType"] = "application/json"
@@ -112,22 +118,29 @@ async def _call_gemini_api(
             "parts": [{"text": system_prompt}]
         }
 
-    async with httpx.AsyncClient(timeout=timeout) as client:
-        res = await client.post(url, headers=headers, json=payload)
-        if res.status_code != 200:
-            raise RuntimeError(f"Gemini API returned HTTP {res.status_code}: {res.text}")
+    last_err = None
+    async with httpx.AsyncClient(timeout=timeout, verify=settings.SSL_VERIFY) as client:
+        for current_model in candidate_models:
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/{current_model}:generateContent?key={api_key}"
+            try:
+                res = await client.post(url, headers={"Content-Type": "application/json"}, json=payload)
+                if res.status_code == 200:
+                    data = res.json()
+                    candidates = data.get("candidates", [])
+                    if candidates:
+                        raw_text = candidates[0]["content"]["parts"][0]["text"]
+                        usage = data.get("usageMetadata", {})
+                        inp_tokens = usage.get("promptTokenCount", len((system_prompt + " " + user_prompt).split()) * 2)
+                        outp_tokens = usage.get("candidatesTokenCount", len(raw_text.split()) * 2)
+                        return raw_text, inp_tokens, outp_tokens
+                else:
+                    last_err = RuntimeError(f"Gemini model {current_model} returned HTTP {res.status_code}: {res.text}")
+                    logger.info(f"Gemini {current_model} returned {res.status_code}, trying next candidate...")
+            except Exception as e:
+                last_err = e
+                logger.info(f"Gemini {current_model} exception ({e}), trying next candidate...")
 
-        data = res.json()
-        candidates = data.get("candidates", [])
-        if not candidates:
-            raise RuntimeError(f"Gemini returned no response candidates: {data}")
-
-        raw_text = candidates[0]["content"]["parts"][0]["text"]
-        usage = data.get("usageMetadata", {})
-        inp_tokens = usage.get("promptTokenCount", len((system_prompt + " " + user_prompt).split()) * 2)
-        outp_tokens = usage.get("candidatesTokenCount", len(raw_text.split()) * 2)
-
-        return raw_text, inp_tokens, outp_tokens
+    raise last_err or RuntimeError("All Gemini candidate models failed.")
 
 
 async def _call_anthropic_api(
@@ -156,7 +169,7 @@ async def _call_anthropic_api(
     if system_prompt:
         payload["system"] = system_prompt
 
-    async with httpx.AsyncClient(timeout=timeout) as client:
+    async with httpx.AsyncClient(timeout=timeout, verify=settings.SSL_VERIFY) as client:
         res = await client.post(url, headers=headers, json=payload)
         if res.status_code != 200:
             raise RuntimeError(f"Anthropic API returned HTTP {res.status_code}: {res.text}")

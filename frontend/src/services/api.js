@@ -26,9 +26,17 @@ export const casesApi = {
   getCases: (params) => api.get('/cases', { params }),
   getCaseDetail: (id) => api.get(`/cases/${id}`),
   createCase: (data) => api.post('/cases', data),
+  create: (data) => api.post('/cases', data),
   expandBrief: (data) => api.post('/cases/expand-brief', data),
   getVagueBenchmarks: () => api.get('/cases/vague-brief-benchmarks'),
+  addControl: (caseId, payload) => api.post(`/cases/${caseId}/controls`, payload),
+  transitionState: (caseId, payload) => api.post(`/cases/${caseId}/transition`, payload),
+  castVote: (caseId, payload) => api.post(`/cases/${caseId}/vote`, payload),
+  getAudit: (caseId) => api.get(`/cases/${caseId}/audit`),
 };
+
+// Backwards-compatibility alias
+export const caseApi = casesApi;
 
 export const assessmentApi = {
   overrideDimension: (caseId, payload) => api.post(`/ai-assessment/${caseId}/override`, payload),

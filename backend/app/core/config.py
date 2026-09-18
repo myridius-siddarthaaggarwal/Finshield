@@ -26,6 +26,7 @@ class Settings(BaseSettings):
     LLM_MODEL: str = "gemini-1.5-pro"  # e.g. "gemini-1.5-pro", "gemini-2.5-pro", "gemini-2.0-flash", "claude-3-7-sonnet-20250219"
     LLM_TEMPERATURE: float = 0.1
     CONFIDENCE_THRESHOLD: float = 0.70  # Below 70% routes to unanchored manual assessment
+    SSL_VERIFY: bool = False  # Allows requests through corporate firewall/proxy SSL inspection
 
     # Governed Data Layer & Prompts Paths
     DATA_LAYER_DIR: Path = PROJECT_ROOT / "governed_data_layer"
@@ -47,7 +48,8 @@ class Settings(BaseSettings):
         return v
 
     class Config:
-        env_file = ".env"
+        env_file = [str(PROJECT_ROOT / ".env"), str(BASE_DIR / ".env"), ".env"]
+        env_file_encoding = "utf-8"
         extra = "ignore"
 
 settings = Settings()

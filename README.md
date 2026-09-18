@@ -20,17 +20,36 @@
 | 💸 **$3.8B+ in fines** (TD Bank $3B, Monzo £21M, Nationwide £44M) | 🛡️ **Catches high-risk vectors BEFORE launch** |
 | 🔍 **Unprovable audit trail** | 🔒 **100% complete immutable ACID audit logs** |
 
+## ⚡ 1-Command Automated Live Demo
+
+Show the complete end-to-end FinShield risk governance workflow for a brand-new proposal across all 5 bank personas with a single command:
+
+```bash
+# Option 1: Via NPM
+npm run demo
+
+# Option 2: Via Python CLI (opens browser automatically)
+py scripts/run_live_demo.py
+
+# Option 3: Windows 1-Click
+start_demo.bat
+```
+
+> 📖 **Full Presenter Script & Scenario Guide**: See **[Live Demo & Presenter Guide](file:///docs/DEMO_GUIDE.md)** for persona talking points, scenario options (`--scenario payments`), and judge Q&A prep.
+
 ---
 
 ## 📚 Team Documentation & Knowledge Index
 
 | Document | Description | Target Audience |
 | :--- | :--- | :--- |
-| 🏛️ **[System Architecture Guide](file:///docs/ARCHITECTURE.md)** | Full technical design, FSM transitions, math, and data flows | Engineers & Architects |
-| 📖 **[User Guide & Presentation Manual](file:///docs/USER_GUIDE.md)** | Step-by-step walkthrough for all personas & demo cases | Presenters & Judges |
-| 🛠️ **[Developer & Local Setup Guide](file:///docs/DEVELOPER_GUIDE.md)** | Local environment setup, test suite, and how to extend code | Teammates & Developers |
-| 🔑 **[API Keys & Configuration Reference](file:///docs/API_KEYS_AND_CONFIG.md)** | Claude API keys, environment variables & offline fallback | Developers & DevOps |
-| 🗺️ **[Future Architectural Roadmap](file:///docs/FUTURE_ROADMAP.md)** | Phase 2 planned extensions: 3-pillar briefing memos, SAR automation | Evaluators & Judges |
+| 🚀 **[Live Demo Walkthrough](docs/LIVE_DEMO_WALKTHROUGH.md)** | **Full 1-command automated demo walkthrough, sequence diagram & metrics** | **All Teams & Presenters** |
+| 🎬 **[Live Demo & Presenter Guide](docs/DEMO_GUIDE.md)** | **1-Command live demo runner, persona switching & pitch script** | **Presenters, Judges & Evaluators** |
+| 🏛️ **[System Architecture Guide](docs/ARCHITECTURE.md)** | Full technical design, FSM transitions, math, and data flows | Engineers & Architects |
+| 📖 **[User Guide & Presentation Manual](docs/USER_GUIDE.md)** | Step-by-step walkthrough for all personas & demo cases | Presenters & Judges |
+| 🛠️ **[Developer & Local Setup Guide](docs/DEVELOPER_GUIDE.md)** | Local environment setup, test suite, and how to extend code | Teammates & Developers |
+| 🔑 **[API Keys & Configuration Reference](docs/API_KEYS_AND_CONFIG.md)** | Claude API keys, environment variables & offline fallback | Developers & DevOps |
+| 🗺️ **[Future Architectural Roadmap](docs/FUTURE_ROADMAP.md)** | Phase 2 planned extensions: 3-pillar briefing memos, SAR automation | Evaluators & Judges |
 
 ---
 

@@ -1,0 +1,13 @@
+{
+  "name": "finshield-platform",
+  "version": "2.6.0",
+  "description": "Enterprise AI Financial Crime Risk Assessment Workbench",
+  "scripts": {
+    "demo": ".\\.venv\\Scripts\\python scripts/run_live_demo.py",
+    "start-demo": ".\\.venv\\Scripts\\python scripts/run_live_demo.py",
+    "demo:payments": ".\\.venv\\Scripts\\python scripts/run_live_demo.py --scenario payments",
+    "backend": "cd backend && ..\\.venv\\Scripts\\python -m uvicorn app.main:app --reload --port 8000",
+    "frontend": "cd frontend && npm run dev"
+  }
+}
+
